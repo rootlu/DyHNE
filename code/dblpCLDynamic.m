@@ -16,22 +16,22 @@ gamma = 1;
 W= W_apcpa+0.1*W_apa+0.9*W_aptpa;
 d = sum(W,2);
 D = diag(d);
-L = D - W;  
+L = D- W;  
 W_norm = NormalizeAdj(W,0,2);
 M = (eye(size(W_norm,1)) - W_norm)' * (eye(size(W_norm,1)) - W_norm);
 
-[embedding, U, Lambda] = DHINOffline(L+M , D,k);
+[embedding, U, Lambda] = DHINOffline(L+gamma*M , D,k);
 
 t2=clock;
 fprintf('Time for static model: %f s  \n', etime(t2,t1)) 
 
-save ./data/dblpDynamic/result/0_0.1apa+1apcpa+0.9aptpa_embedding.mat embedding;
+save ./data/dblpDynamic/result/static_0.1apa+1apcpa+0.9aptpa_embedding.mat embedding;
 
 
 %% pertubate the data and obtain the new diagonal and laplacian matrix
 A = (W_norm-eye(size(W_norm,1)))*U;
 % B = zeros(size(W_norm,1),size(U,2));
-for i = 1:10
+for i = 1:9
     fprintf('Time step: %d  \n', i) 
     apa_data = ['./data/dblpDynamic/apa_csr_',int2str(i),'.mat'];
     apcpa_data = ['./data/dblpDynamic/apcpa_csr_',int2str(i),'.mat'];
@@ -75,3 +75,5 @@ for i = 1:10
 %     A = A_new;
 %     B = B_new;
 end
+
+save ./data/dblpDynamic/result/final_0.1apa+1apcpa+0.9aptpa_embedding.mat embedding;

@@ -21,8 +21,8 @@ L_unify = D_unify- W_unify;
 W_unify = NormalizeAdj(W_unify,0,2);
 M_unify = (speye(size(W_unify,1)) - W_unify)' * (speye(size(W_unify,1)) - W_unify);
 
-[unify_embedding, U_unify, Lambda_unify] = DHINOffline(0.5*L_unify + 0.5*M_unify, D_unify,k);
-save ./data/yelp/result/unify_0.1bsb+0.1bcb+0.8brurb_embedding_0.5g0.5.mat unify_embedding;
+[unify_embedding, U_unify, Lambda_unify] = DHINOffline(L_unify + M_unify, D_unify,k);
+save ./data/yelp/result/unify_bsb+bcb+brurb_embedding.mat unify_embedding;
 
 t2=clock;
 fprintf('Time for static model: %f s  \n', etime(t2,t1)) 

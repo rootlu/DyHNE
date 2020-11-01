@@ -14,23 +14,11 @@ load ./data/dblp/aptpa_csr.mat;
 W_apa = apa;
 W_apcpa = apcpa;
 W_aptpa = aptpa;
+[y_id,y_label] = textread('./data/dblp/oriData/author_label.txt','%d%d');
+label_size = length(y_id);
 
 k = 100;
 gamma = 1;
-
-t1=clock;
-W_unify = W_apcpa+0.1*W_apa+0.9*W_aptpa;
-dunify = sum(W_unify,2);
-D_unify = diag(dunify);
-L_unify = D_unify - W_unify;  
-W_unify = NormalizeAdj(W_unify,0,2);
-M_unify = (eye(size(W_unify,1)) - W_unify)' * (eye(size(W_unify,1)) - W_unify);
-
-[unify_embedding, U_unify, Lambda_unify] = DHINOffline(L_unify+gamma*M_unify, D_unify,k);
-save ./data/dblp/result/unify_0.1apa+1apcpa+0.9aptpa_embedding.mat unify_embedding;
-
-t2=clock;
-fprintf('Time for static model: %f s  \n', etime(t2,t1)) 
 
 % obtain diagonal and laplacian matrix
 
@@ -84,3 +72,17 @@ fprintf('Time for static model: %f s  \n', etime(t2,t1))
 % 
 % split_embedding = 0.1*apa_embedding(1:14475,:)+0.9*aptpa_embedding(1:14475,:)+apcpa_embedding(1:14475,:);
 % save ./data/dblp/result/split_0.1apa+1apcpa+0.9aptpa_embedding.mat split_embedding;
+
+t1=clock;
+W_unify = W_apcpa+0.1*W_apa+0.9*W_aptpa;
+dunify = sum(W_unify,2);
+D_unify = diag(dunify);
+L_unify = D_unify- W_unify;  
+W_unify = NormalizeAdj(W_unify,0,2);
+M_unify = (eye(size(W_unify,1)) - W_unify)' * (eye(size(W_unify,1)) - W_unify);
+
+[unify_embedding, U_unify, Lambda_unify] = DHINOffline(L_unify+gamma*M_unify, D_unify,k);
+save ./data/dblp/result/unify_0.1apa+1apcpa+0.9aptpa_embedding.mat unify_embedding;
+
+t2=clock;
+fprintf('Time for static model: %f s  \n', etime(t2,t1)) 

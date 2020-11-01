@@ -13,14 +13,14 @@ k = 100;
 gamma = 1;
 
 t1=clock;
-W_unify = W_brurb;
+W_unify = 0.4*W_bsb+0.6*W_brurb;
 dunify = sum(W_unify,2);
 D_unify = diag(dunify);
 L_unify = D_unify- W_unify;  
 W_unify = NormalizeAdj(W_unify,0,2);
 M_unify = (speye(size(W_unify,1)) - W_unify)' * (speye(size(W_unify,1)) - W_unify);
-[unify_embedding, U_unify, Lambda_unify] = DHINOffline(L_unify+M_unify, D_unify,k);
-save  ./data/yelpWWW/result/unify_brurb_embedding.mat unify_embedding;
+[unify_embedding, U_unify, Lambda_unify] = DHINOffline(M_unify, D_unify,k);
+save  ./data/yelpWWW/result/unify_0.4bsb+0.6brurb_embedding_2nd.mat unify_embedding;
 t2=clock;
 fprintf('Time for static model: %f s  \n', etime(t2,t1)) 
 
